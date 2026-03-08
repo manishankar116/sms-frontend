@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -31,6 +31,24 @@ const HOMEWORK_LIST: HomeworkItem[] = [
     studentName: 'Mani Shankar',
     subject: 'Mathematics',
   },
+  {
+    id: '3',
+    title: 'Solve Algebra Worksheet',
+    description: 'Complete attached worksheet on algebraic equations and submit it',
+    assignedDate: 'Mar 05, 2026',
+    dueDate: 'Mar 07, 2026',
+    studentName: 'Mani Shankar',
+    subject: 'Mathematics',
+  },
+  {
+    id: '4',
+    title: 'Solve Algebra Worksheet',
+    description: 'Complete attached worksheet on algebraic equations and submit it',
+    assignedDate: 'Mar 05, 2026',
+    dueDate: 'Mar 07, 2026',
+    studentName: 'Mani Shankar',
+    subject: 'Mathematics',
+  },
 ];
 
 function HomeworkCard({ item }: { item: HomeworkItem }) {
@@ -42,18 +60,18 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
       <View style={styles.divider} />
 
       <View style={styles.metaRow}>
-        <Ionicons name="calendar-outline" size={18} color="#111" />
+        <Ionicons name="calendar-outline" size={14} color="#111" />
         <Text style={styles.metaText}>Assigned : {item.assignedDate}</Text>
       </View>
 
       <View style={styles.metaRow}>
-        <Ionicons name="calendar-outline" size={18} color="#111" />
+        <Ionicons name="calendar-outline" size={14} color="#111" />
         <Text style={styles.metaText}>Due : {item.dueDate}</Text>
       </View>
 
       <View style={styles.footerRow}>
         <View style={styles.metaRow}>
-          <Ionicons name="person" size={18} color="#111" />
+          <Ionicons name="person" size={14} color="#111" />
           <Text style={styles.metaText}>{item.studentName}</Text>
         </View>
         <Text style={styles.subjectText}>{item.subject}</Text>
@@ -64,17 +82,15 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
 
 export default function HomeworkScreen() {
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>HomeWork</Text>
-      </View>
-
-      <View style={styles.content}>
-        {HOMEWORK_LIST.map((item) => (
-          <HomeworkCard key={item.id} item={item} />
-        ))}
-      </View>
-    </SafeAreaView>
+    <ScrollView>
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
+        <View style={styles.content}>
+          {HOMEWORK_LIST.map((item) => (
+            <HomeworkCard key={item.id} item={item} />
+          ))}
+        </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -85,7 +101,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#5371CF',
-    height: 88,
+    height: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -98,14 +114,14 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 12,
-    paddingTop: 16,
-    rowGap: 18,
+    paddingTop: 0,
+    rowGap: 14,
   },
   card: {
     backgroundColor: '#F5F5F5',
     borderRadius: 2,
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -113,14 +129,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 36,
+    fontSize: 18,
     fontWeight: '500',
     color: '#111',
     marginBottom: 10,
   },
   cardDescription: {
-    fontSize: 31,
-    lineHeight: 44,
+    fontSize: 14,
     color: '#222',
     marginBottom: 14,
   },
@@ -132,11 +147,11 @@ const styles = StyleSheet.create({
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 10,
+    gap: 7,
+    marginBottom: 6,
   },
   metaText: {
-    fontSize: 29,
+    fontSize: 12,
     color: '#242424',
   },
   footerRow: {
@@ -146,8 +161,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subjectText: {
-    fontSize: 31,
+    fontSize: 14,
     color: '#111',
-    marginBottom: 12,
+    marginBottom: 10,
+    fontWeight:'bold'
   },
 });
