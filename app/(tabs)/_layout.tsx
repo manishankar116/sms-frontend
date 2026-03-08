@@ -31,10 +31,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="attendance"
+        name="homework"
         options={{
-          title: 'Attendance',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="checkmark.circle" color={color} />,
+          title: 'Homework',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="book.fill" color={color} />,
         }}
       />
     </Tabs>
