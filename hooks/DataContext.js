@@ -8,12 +8,8 @@ export const DataProvider = ({ children }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-<<<<<<< HEAD
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZWFjaGVyMSIsImlhdCI6MTc3MzA3Nzc1NCwiZXhwIjoxNzczMTY0MTU0fQ.q17e1aZ9F7_pcE3jgCNkgPag6AMIo4foDloDlyPZwlw";
-=======
   const fetchChildOverview = useCallback(async () => {
     const token = await getToken();
->>>>>>> d67d017ad60d09edd8484f9ce8304031558cca0f
 
     if (!token) {
       setData(null);
