@@ -1,31 +1,47 @@
-import React, {createContext, useState, useEffect} from "react";
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 
+import { getToken } from './authStorage';
 
 export const DataContext = createContext();
 
-export const DataProvider = ({children}) => {
+export const DataProvider = ({ children }) => {
   const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZWFjaGVyMSIsImlhdCI6MTc3Mjk3ODAxNSwiZXhwIjoxNzczMDY0NDE1fQ.ZWv5_i6r91nRYhCR4DUjP5FXbQy2aqAWxiqx5Qgyauk";
+  const fetchChildOverview = useCallback(async () => {
+    const token = await getToken();
 
-  useEffect(() => {
-    fetch("http://10.0.2.2:8080/api/parent/1/child-overview", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.json())
-      .then(json => {
-        setData(json);
-      })
-      .catch(err => console.log(err));
+    if (!token) {
+      setData(null);
+      return null;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://10.0.2.2:8080/api/parent/1/child-overview', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const json = await response.json();
+      setData(json);
+      return json;
+    } catch (error) {
+      console.log('Error fetching child overview', error);
+      setData(null);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  return (
-    <DataContext.Provider value={data}>
-      {children}
-    </DataContext.Provider>
-  );
+  useEffect(() => {
+    fetchChildOverview();
+  }, [fetchChildOverview]);
+
+  return <DataContext.Provider value={{ data, isLoading, fetchChildOverview }}>{children}</DataContext.Provider>;
 };
