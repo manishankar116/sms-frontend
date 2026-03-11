@@ -1,9 +1,6 @@
-import React, { useContext, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-
-import { DataContext } from '@/hooks/DataContext';
 
 type HomeworkItem = {
   id: string;
@@ -15,171 +12,142 @@ type HomeworkItem = {
   subject: string;
 };
 
+const HOMEWORK_LIST: HomeworkItem[] = [
+  {
+    id: '1',
+    title: 'Solve Algebra Worksheet',
+    description: 'Complete attached worksheet on algebraic equations and submit it',
+    assignedDate: 'Mar 05, 2026',
+    dueDate: 'Mar 07, 2026',
+    studentName: 'Mani Shankar',
+    subject: 'Mathematics',
+  },
+  {
+    id: '2',
+    title: 'Solve Algebra Worksheet',
+    description: 'Complete attached worksheet on algebraic equations and submit it',
+    assignedDate: 'Mar 05, 2026',
+    dueDate: 'Mar 07, 2026',
+    studentName: 'Mani Shankar',
+    subject: 'Mathematics',
+  },
+];
+
 function HomeworkCard({ item }: { item: HomeworkItem }) {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
       <Text style={styles.cardDescription}>{item.description}</Text>
 
-  React.useEffect(() => {
-    const checkToken = async () => {
-      const token = await getToken();
-      if (token) {
-        await fetchChildOverview();
-        router.replace('/(tabs)/attendance');
-      }
-    };
+      <View style={styles.divider} />
 
-    checkToken();
-  }, [fetchChildOverview]);
+      <View style={styles.metaRow}>
+        <Ionicons name="calendar-outline" size={18} color="#111" />
+        <Text style={styles.metaText}>Assigned : {item.assignedDate}</Text>
+      </View>
 
-  const handleLogin = async () => {
-    setError('');
-    setLoading(true);
+      <View style={styles.metaRow}>
+        <Ionicons name="calendar-outline" size={18} color="#111" />
+        <Text style={styles.metaText}>Due : {item.dueDate}</Text>
+      </View>
 
-    try {
-      const { response, payload } = await requestLogin(username, password);
-      const token = payload?.token;
-
-      if (!response.ok || !token) {
-        setError(payload?.message || 'Login failed. Please check credentials.');
-
-        return;
-      }
-
-      await saveToken(token);
-      await fetchChildOverview();
-      router.replace('/(tabs)/attendance');
-    } catch {
-      setError('Unable to reach server. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-const formatDate = (value: string | undefined) => {
-  if (!value) return '-';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-  });
-};
-
-const extractHomeworkArray = (data: any) => {
-  const candidate = data?.homework ?? data?.homeworks ?? data?.homeworkList ?? data?.homeworkData;
-
-  if (Array.isArray(candidate)) return candidate;
-  if (Array.isArray(candidate?.items)) return candidate.items;
-  if (Array.isArray(candidate?.content)) return candidate.content;
-  return [];
-};
+      <View style={styles.footerRow}>
+        <View style={styles.metaRow}>
+          <Ionicons name="person" size={18} color="#111" />
+          <Text style={styles.metaText}>{item.studentName}</Text>
+        </View>
+        <Text style={styles.subjectText}>{item.subject}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default function HomeworkScreen() {
-  const contextValue = useContext(DataContext);
-  const data = contextValue?.data;
-  const isLoading = contextValue?.isLoading;
-
-  const homeworkList = useMemo(() => {
-    const apiList = extractHomeworkArray(data);
-
-    return apiList.map((item: any, index: number) => ({
-      id: String(item?.id ?? item?.homeworkId ?? index),
-      title: item?.title ?? item?.name ?? 'Homework',
-      description: item?.description ?? item?.details ?? '-',
-      assignedDate: formatDate(item?.assignedDate ?? item?.createdAt),
-      dueDate: formatDate(item?.dueDate),
-      studentName: item?.studentName ?? data?.student?.name ?? 'Student',
-      subject: item?.subject ?? item?.subjectName ?? '-',
-    }));
-  }, [data]);
-
   return (
-    <ScrollView>
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <View style={styles.content}>
-          {isLoading ? <Text style={styles.stateText}>Loading homework...</Text> : null}
-          {!isLoading && homeworkList.length === 0 ? (
-            <Text style={styles.stateText}>No homework data available.</Text>
-          ) : null}
-          {homeworkList.map((item: HomeworkItem) => (
-            <HomeworkCard key={item.id} item={item} />
-          ))}
-        </View>
-      </SafeAreaView>
-    </ScrollView>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>HomeWork</Text>
+      </View>
+
+      <View style={styles.content}>
+        {HOMEWORK_LIST.map((item) => (
+          <HomeworkCard key={item.id} item={item} />
+        ))}
+      </View>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#DCE1E7',
+  },
+  header: {
+    backgroundColor: '#5371CF',
+    height: 88,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 38,
+    fontWeight: '500',
+    letterSpacing: 0.6,
   },
   content: {
     flex: 1,
     paddingHorizontal: 12,
-    paddingTop: 0,
-    rowGap: 14,
-  },
-  stateText: {
-    marginTop: 16,
-    textAlign: 'center',
-    color: '#374151',
+    paddingTop: 16,
+    rowGap: 18,
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 4,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
-  title: {
-    color: '#0f172a',
-    fontSize: 28,
-    fontWeight: '700',
-  },
-  subtitle: {
-    color: '#475569',
-
-    marginTop: 6,
-    marginBottom: 18,
-  },
-  input: {
-    backgroundColor: '#f8fafc',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 12,
-    color: '#0f172a',
-  },
-  error: {
-    color: '#b91c1c',
-    marginBottom: 12,
-  },
-  button: {
-    backgroundColor: '#3b82f6',
-    borderRadius: 10,
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  subjectText: {
-    fontSize: 14,
+  cardTitle: {
+    fontSize: 36,
+    fontWeight: '500',
     color: '#111',
     marginBottom: 10,
-    fontWeight: 'bold',
+  },
+  cardDescription: {
+    fontSize: 31,
+    lineHeight: 44,
+    color: '#222',
+    marginBottom: 14,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+    marginBottom: 12,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  metaText: {
+    fontSize: 29,
+    color: '#242424',
+  },
+  footerRow: {
+    marginTop: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  subjectText: {
+    fontSize: 31,
+    color: '#111',
+    marginBottom: 12,
   },
 });
-
-export default LoginScreen;
