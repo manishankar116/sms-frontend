@@ -1,6 +1,9 @@
+import React, { useContext, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+
+import { DataContext } from '@/hooks/DataContext';
 
 type HomeworkItem = {
   id: string;
@@ -11,45 +14,6 @@ type HomeworkItem = {
   studentName: string;
   subject: string;
 };
-
-const HOMEWORK_LIST: HomeworkItem[] = [
-  {
-    id: '1',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
-  },
-  {
-    id: '2',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
-  },
-  {
-    id: '3',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
-  },
-  {
-    id: '4',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
-  },
-];
 
 function HomeworkCard({ item }: { item: HomeworkItem }) {
   return (
@@ -80,12 +44,56 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
   );
 }
 
+const formatDate = (value: string | undefined) => {
+  if (!value) return '-';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const extractHomeworkArray = (data: any) => {
+  const candidate = data?.homework ?? data?.homeworks ?? data?.homeworkList ?? data?.homeworkData;
+
+  if (Array.isArray(candidate)) return candidate;
+  if (Array.isArray(candidate?.items)) return candidate.items;
+  if (Array.isArray(candidate?.content)) return candidate.content;
+  return [];
+};
+
 export default function HomeworkScreen() {
+  const contextValue = useContext(DataContext);
+  const data = contextValue?.data;
+  const isLoading = contextValue?.isLoading;
+
+  const homeworkList = useMemo(() => {
+    const apiList = extractHomeworkArray(data);
+
+    return apiList.map((item: any, index: number) => ({
+      id: String(item?.id ?? item?.homeworkId ?? index),
+      title: item?.title ?? item?.name ?? 'Homework',
+      description: item?.description ?? item?.details ?? '-',
+      assignedDate: formatDate(item?.assignedDate ?? item?.createdAt),
+      dueDate: formatDate(item?.dueDate),
+      studentName: item?.studentName ?? data?.student?.name ?? 'Student',
+      subject: item?.subject ?? item?.subjectName ?? '-',
+    }));
+  }, [data]);
+
   return (
     <ScrollView>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.content}>
-          {HOMEWORK_LIST.map((item) => (
+          {isLoading ? <Text style={styles.stateText}>Loading homework...</Text> : null}
+          {!isLoading && homeworkList.length === 0 ? (
+            <Text style={styles.stateText}>No homework data available.</Text>
+          ) : null}
+          {homeworkList.map((item: HomeworkItem) => (
             <HomeworkCard key={item.id} item={item} />
           ))}
         </View>
@@ -99,23 +107,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#DCE1E7',
   },
-  header: {
-    backgroundColor: '#5371CF',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 38,
-    fontWeight: '500',
-    letterSpacing: 0.6,
-  },
   content: {
     flex: 1,
     paddingHorizontal: 12,
     paddingTop: 0,
     rowGap: 14,
+  },
+  stateText: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: '#374151',
   },
   card: {
     backgroundColor: '#F5F5F5',
@@ -164,6 +165,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#111',
     marginBottom: 10,
-    fontWeight:'bold'
+    fontWeight: 'bold',
   },
 });
