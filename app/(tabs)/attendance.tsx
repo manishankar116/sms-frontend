@@ -69,7 +69,8 @@ data?.attendance?.forEach((item: any) => {
     }
   });
 
-  console.log(stats)
+  console.log("Hi");
+  
 
   const pieData = [
     {value: stats.last3Months.present, color: '#35b85c'},

@@ -2,6 +2,8 @@ import React, { useContext, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useContext } from 'react';
+import { DataContext } from '@/hooks/DataContext';
 
 import { DataContext } from '@/hooks/DataContext';
 
@@ -11,11 +13,14 @@ type HomeworkItem = {
   description: string;
   assignedDate: string;
   dueDate: string;
-  studentName: string;
-  subject: string;
+  teacherId: string;
+  subjectName: string;
 };
 
 function HomeworkCard({ item }: { item: HomeworkItem }) {
+  const data = useContext(DataContext);
+  console.log('Homework List from Context:', data?.homework); 
+
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
@@ -36,9 +41,9 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
       <View style={styles.footerRow}>
         <View style={styles.metaRow}>
           <Ionicons name="person" size={14} color="#111" />
-          <Text style={styles.metaText}>{item.studentName}</Text>
+          <Text style={styles.metaText}>{item.teacherId}</Text>
         </View>
-        <Text style={styles.subjectText}>{item.subject}</Text>
+        <Text style={styles.subjectText}>{item.subjectName}</Text>
       </View>
     </View>
   );
@@ -58,22 +63,7 @@ const formatDate = (value: string | undefined) => {
 };
 
 export default function HomeworkScreen() {
-  const { data, isLoading } = useContext(DataContext);
-
-  const homeworkList = useMemo(() => {
-    const apiList = data?.homework || data?.homeworks || data?.homeworkList || [];
-
-    return apiList.map((item: any, index: number) => ({
-      id: String(item.id ?? item.homeworkId ?? index),
-      title: item.title ?? item.name ?? 'Homework',
-      description: item.description ?? item.details ?? '-',
-      assignedDate: formatDate(item.assignedDate ?? item.createdAt),
-      dueDate: formatDate(item.dueDate),
-      studentName: item.studentName ?? data?.student?.name ?? 'Student',
-      subject: item.subject ?? item.subjectName ?? '-',
-    }));
-  }, [data]);
-
+  const data = useContext(DataContext);
   return (
     <ScrollView>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
