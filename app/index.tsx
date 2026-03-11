@@ -14,7 +14,6 @@ import { router } from 'expo-router';
 import { DataContext } from '@/hooks/DataContext';
 import { getToken, saveToken } from '@/hooks/authStorage';
 
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
 const API_URLS = ['http://10.0.2.2:8080', 'http://localhost:8080'];
 
 const requestLogin = async (username: string, password: string) => {
@@ -40,8 +39,7 @@ const requestLogin = async (username: string, password: string) => {
   throw lastError;
 };
 
-=======
->>>>>>> main
+
 const LoginScreen = () => {
   const [username, setUsername] = useState('teacher1');
   const [password, setPassword] = useState('password');
@@ -66,27 +64,12 @@ const LoginScreen = () => {
     setLoading(true);
 
     try {
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
       const { response, payload } = await requestLogin(username, password);
       const token = payload?.token;
 
       if (!response.ok || !token) {
         setError(payload?.message || 'Login failed. Please check credentials.');
-=======
-      const response = await fetch('http://10.0.2.2:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
 
-      const data = await response.json();
-      const token = data?.token || data?.jwtToken || data?.accessToken;
-
-      if (!response.ok || !token) {
-        setError(data?.message || 'Login failed. Please check credentials.');
->>>>>>> main
         return;
       }
 
@@ -103,24 +86,19 @@ const LoginScreen = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
       <View style={styles.card}>
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
         <Text style={styles.title}>Sign in</Text>
         <Text style={styles.subtitle}>Welcome back! Please login to continue.</Text>
-=======
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Login to continue to attendance</Text>
->>>>>>> main
+        <Text style={styles.title}>Sign in</Text>
+        <Text style={styles.subtitle}>Welcome back! Please login to continue.</Text>
+
 
         <TextInput
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
           placeholder="Username"
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
           placeholderTextColor="#9aa4b2"
-=======
-          placeholderTextColor="#8ea6d9"
->>>>>>> main
+
           style={styles.input}
         />
 
@@ -129,11 +107,8 @@ const LoginScreen = () => {
           onChangeText={setPassword}
           secureTextEntry
           placeholder="Password"
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
           placeholderTextColor="#9aa4b2"
-=======
-          placeholderTextColor="#8ea6d9"
->>>>>>> main
+
           style={styles.input}
         />
 
@@ -150,16 +125,12 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
     backgroundColor: '#f3f6fb',
-=======
-    backgroundColor: '#0d47a1',
->>>>>>> main
+
     justifyContent: 'center',
     padding: 20,
   },
   card: {
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
@@ -173,28 +144,16 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#0f172a',
-=======
-    backgroundColor: '#1565c0',
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: {
-    color: 'white',
->>>>>>> main
+
     fontSize: 28,
     fontWeight: '700',
   },
   subtitle: {
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
     color: '#475569',
-=======
-    color: '#d6e4ff',
->>>>>>> main
     marginTop: 6,
     marginBottom: 18,
   },
   input: {
-<<<<<<< codex/create-blue-themed-login-screen-awo8tf
     backgroundColor: '#f8fafc',
     borderRadius: 10,
     borderWidth: 1,
@@ -210,21 +169,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#3b82f6',
-=======
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 12,
-    color: '#12326b',
-  },
-  error: {
-    color: '#ffd4d4',
-    marginBottom: 12,
-  },
-  button: {
-    backgroundColor: '#1e88e5',
->>>>>>> main
+
     borderRadius: 10,
     alignItems: 'center',
     paddingVertical: 12,
