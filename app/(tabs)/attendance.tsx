@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions, ScrollView, FlatList } from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
 import React, { useContext } from 'react'
 
 import { PieChart } from 'react-native-gifted-charts';
 import { DataContext } from '@/hooks/DataContext';
 
-const attendance = () => {
+const Attendance = () => {
 
   const recentAttendance = ({item}:any) => {
     const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
@@ -22,8 +22,7 @@ const attendance = () => {
     )
   }
 
-const { width } = useWindowDimensions();
-const data = useContext(DataContext);
+const { data } = useContext(DataContext);
 
 const now = new Date();
 const currentMonth = now.getMonth();
@@ -124,7 +123,7 @@ data?.attendance?.forEach((item: any) => {
     <FlatList 
       data = {data?.attendance}
       renderItem={recentAttendance}
-      keyExtractor={item => item.id}
+      keyExtractor={item => String(item.id)}
     />
   
 
@@ -207,4 +206,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default attendance
+export default Attendance
