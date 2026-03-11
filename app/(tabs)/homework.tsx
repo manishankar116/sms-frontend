@@ -1,6 +1,8 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useContext } from 'react';
+import { DataContext } from '@/hooks/DataContext';
 
 type HomeworkItem = {
   id: string;
@@ -8,9 +10,11 @@ type HomeworkItem = {
   description: string;
   assignedDate: string;
   dueDate: string;
-  studentName: string;
-  subject: string;
+  teacherId: string;
+  subjectName: string;
 };
+
+
 
 const HOMEWORK_LIST: HomeworkItem[] = [
   {
@@ -19,8 +23,8 @@ const HOMEWORK_LIST: HomeworkItem[] = [
     description: 'Complete attached worksheet on algebraic equations and submit it',
     assignedDate: 'Mar 05, 2026',
     dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
+    teacherId: 'Mani Shankar',
+    subjectName: 'Mathematics',
   },
   {
     id: '2',
@@ -28,8 +32,8 @@ const HOMEWORK_LIST: HomeworkItem[] = [
     description: 'Complete attached worksheet on algebraic equations and submit it',
     assignedDate: 'Mar 05, 2026',
     dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
+    teacherId: 'Mani Shankar',
+    subjectName: 'Mathematics',
   },
   {
     id: '3',
@@ -37,8 +41,8 @@ const HOMEWORK_LIST: HomeworkItem[] = [
     description: 'Complete attached worksheet on algebraic equations and submit it',
     assignedDate: 'Mar 05, 2026',
     dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
+    teacherId: 'Mani Shankar',
+    subjectName: 'Mathematics',
   },
   {
     id: '4',
@@ -46,12 +50,15 @@ const HOMEWORK_LIST: HomeworkItem[] = [
     description: 'Complete attached worksheet on algebraic equations and submit it',
     assignedDate: 'Mar 05, 2026',
     dueDate: 'Mar 07, 2026',
-    studentName: 'Mani Shankar',
-    subject: 'Mathematics',
+    teacherId: 'Mani Shankar',
+    subjectName: 'Mathematics',
   },
 ];
 
 function HomeworkCard({ item }: { item: HomeworkItem }) {
+  const data = useContext(DataContext);
+  console.log('Homework List from Context:', data?.homework); 
+
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.title}</Text>
@@ -72,20 +79,21 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
       <View style={styles.footerRow}>
         <View style={styles.metaRow}>
           <Ionicons name="person" size={14} color="#111" />
-          <Text style={styles.metaText}>{item.studentName}</Text>
+          <Text style={styles.metaText}>{item.teacherId}</Text>
         </View>
-        <Text style={styles.subjectText}>{item.subject}</Text>
+        <Text style={styles.subjectText}>{item.subjectName}</Text>
       </View>
     </View>
   );
 }
 
 export default function HomeworkScreen() {
+  const data = useContext(DataContext);
   return (
     <ScrollView>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.content}>
-          {HOMEWORK_LIST.map((item) => (
+          {data?.homework?.map((item: HomeworkItem) => (
             <HomeworkCard key={item.id} item={item} />
           ))}
         </View>
