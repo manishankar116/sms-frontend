@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TOKEN_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZWFjaGVyMSIsImlhdCI6MTc3MzI0MzIwNCwiZXhwIjoxNzczMzI5NjA0fQ.EpXWwDnVFJG-mVBTXf-CkKVaru9LW9hwgfxfUE8vDgg';
+const TOKEN_KEY = 'jwtToken';
 
 export const saveToken = async (token: string) => {
   try {

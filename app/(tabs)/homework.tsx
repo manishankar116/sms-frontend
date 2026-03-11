@@ -1,7 +1,10 @@
+import React, { useContext, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useContext } from 'react';
+import { DataContext } from '@/hooks/DataContext';
+
 import { DataContext } from '@/hooks/DataContext';
 
 type HomeworkItem = {
@@ -13,47 +16,6 @@ type HomeworkItem = {
   teacherId: string;
   subjectName: string;
 };
-
-
-
-const HOMEWORK_LIST: HomeworkItem[] = [
-  {
-    id: '1',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    teacherId: 'Mani Shankar',
-    subjectName: 'Mathematics',
-  },
-  {
-    id: '2',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    teacherId: 'Mani Shankar',
-    subjectName: 'Mathematics',
-  },
-  {
-    id: '3',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    teacherId: 'Mani Shankar',
-    subjectName: 'Mathematics',
-  },
-  {
-    id: '4',
-    title: 'Solve Algebra Worksheet',
-    description: 'Complete attached worksheet on algebraic equations and submit it',
-    assignedDate: 'Mar 05, 2026',
-    dueDate: 'Mar 07, 2026',
-    teacherId: 'Mani Shankar',
-    subjectName: 'Mathematics',
-  },
-];
 
 function HomeworkCard({ item }: { item: HomeworkItem }) {
   const data = useContext(DataContext);
@@ -87,13 +49,30 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
   );
 }
 
+const formatDate = (value: string | undefined) => {
+  if (!value) return '-';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+};
+
 export default function HomeworkScreen() {
   const data = useContext(DataContext);
   return (
     <ScrollView>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.content}>
-          {data?.homework?.map((item: HomeworkItem) => (
+          {isLoading ? <Text style={styles.stateText}>Loading homework...</Text> : null}
+          {!isLoading && homeworkList.length === 0 ? (
+            <Text style={styles.stateText}>No homework data available.</Text>
+          ) : null}
+          {homeworkList.map((item: HomeworkItem) => (
             <HomeworkCard key={item.id} item={item} />
           ))}
         </View>
@@ -107,23 +86,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#DCE1E7',
   },
-  header: {
-    backgroundColor: '#5371CF',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 38,
-    fontWeight: '500',
-    letterSpacing: 0.6,
-  },
   content: {
     flex: 1,
     paddingHorizontal: 12,
     paddingTop: 0,
     rowGap: 14,
+  },
+  stateText: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: '#374151',
   },
   card: {
     backgroundColor: '#F5F5F5',
@@ -172,6 +144,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#111',
     marginBottom: 10,
-    fontWeight:'bold'
+    fontWeight: 'bold',
   },
 });
