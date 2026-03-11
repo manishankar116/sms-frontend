@@ -21,28 +21,41 @@ function HomeworkCard({ item }: { item: HomeworkItem }) {
       <Text style={styles.cardTitle}>{item.title}</Text>
       <Text style={styles.cardDescription}>{item.description}</Text>
 
-      <View style={styles.divider} />
+  React.useEffect(() => {
+    const checkToken = async () => {
+      const token = await getToken();
+      if (token) {
+        await fetchChildOverview();
+        router.replace('/(tabs)/attendance');
+      }
+    };
 
-      <View style={styles.metaRow}>
-        <Ionicons name="calendar-outline" size={14} color="#111" />
-        <Text style={styles.metaText}>Assigned : {item.assignedDate}</Text>
-      </View>
+    checkToken();
+  }, [fetchChildOverview]);
 
-      <View style={styles.metaRow}>
-        <Ionicons name="calendar-outline" size={14} color="#111" />
-        <Text style={styles.metaText}>Due : {item.dueDate}</Text>
-      </View>
+  const handleLogin = async () => {
+    setError('');
+    setLoading(true);
 
-      <View style={styles.footerRow}>
-        <View style={styles.metaRow}>
-          <Ionicons name="person" size={14} color="#111" />
-          <Text style={styles.metaText}>{item.studentName}</Text>
-        </View>
-        <Text style={styles.subjectText}>{item.subject}</Text>
-      </View>
-    </View>
-  );
-}
+    try {
+      const { response, payload } = await requestLogin(username, password);
+      const token = payload?.token;
+
+      if (!response.ok || !token) {
+        setError(payload?.message || 'Login failed. Please check credentials.');
+
+        return;
+      }
+
+      await saveToken(token);
+      await fetchChildOverview();
+      router.replace('/(tabs)/attendance');
+    } catch {
+      setError('Unable to reach server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 const formatDate = (value: string | undefined) => {
   if (!value) return '-';
@@ -100,10 +113,10 @@ export default function HomeworkScreen() {
       </SafeAreaView>
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: '#DCE1E7',
   },
@@ -119,47 +132,47 @@ const styles = StyleSheet.create({
     color: '#374151',
   },
   card: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#111',
-    marginBottom: 10,
+  title: {
+    color: '#0f172a',
+    fontSize: 28,
+    fontWeight: '700',
   },
-  cardDescription: {
-    fontSize: 14,
-    color: '#222',
-    marginBottom: 14,
+  subtitle: {
+    color: '#475569',
+
+    marginTop: 6,
+    marginBottom: 18,
   },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#DDD',
+  input: {
+    backgroundColor: '#f8fafc',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 12,
+    color: '#0f172a',
+  },
+  error: {
+    color: '#b91c1c',
     marginBottom: 12,
   },
-  metaRow: {
-    flexDirection: 'row',
+  button: {
+    backgroundColor: '#3b82f6',
+    borderRadius: 10,
     alignItems: 'center',
-    gap: 7,
-    marginBottom: 6,
-  },
-  metaText: {
-    fontSize: 12,
-    color: '#242424',
-  },
-  footerRow: {
-    marginTop: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingVertical: 12,
   },
   subjectText: {
     fontSize: 14,
@@ -168,3 +181,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default LoginScreen;
