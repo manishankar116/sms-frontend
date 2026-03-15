@@ -1,13 +1,26 @@
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
+import { getValidToken } from '@/hooks/authStorage';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      const token = await getValidToken();
+
+      if (!token) {
+        router.replace('/login');
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   return (
     <Tabs
