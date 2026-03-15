@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 
-import { getToken } from './authStorage';
+import { clearToken, getValidToken } from './authStorage';
 
 export const DataContext = createContext();
 
@@ -26,7 +26,7 @@ export const DataProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchChildOverview = useCallback(async () => {
-    const token = await getToken();
+    const token = await getValidToken();
 
     if (!token) {
       setData(null);
@@ -43,6 +43,12 @@ export const DataProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       });
+
+      if (response.status === 401) {
+        await clearToken();
+        setData(null);
+        return null;
+      }
 
       if (!response.ok) {
         throw new Error(`Failed with status ${response.status}`);

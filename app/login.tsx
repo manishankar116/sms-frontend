@@ -12,7 +12,7 @@ import {
 import { router } from 'expo-router';
 
 import { DataContext } from '@/hooks/DataContext';
-import { getToken, saveToken } from '@/hooks/authStorage';
+import { getValidToken, saveToken } from '@/hooks/authStorage';
 
 const API_URLS = ['http://10.0.2.2:8080', 'http://localhost:8080'];
 
@@ -48,7 +48,7 @@ const LoginScreen = () => {
 
   React.useEffect(() => {
     const checkToken = async () => {
-      const token = await getToken();
+      const token = await getValidToken();
       if (token) {
         await fetchChildOverview();
         router.replace('/(tabs)/attendance');
