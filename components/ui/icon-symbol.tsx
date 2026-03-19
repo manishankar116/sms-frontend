@@ -20,7 +20,8 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'checkmark.circle' : 'check-circle',
   'book.fill' : 'book',
-  'doc.text.fill': 'description'
+  'doc.text.fill': 'description',
+  'chart.bar.fill': 'bar-chart'
 } as IconMapping;
 
 /**
