@@ -13,7 +13,7 @@ type SubjectMark = {
   teacherName: string;  
   marks: number;
   maxMarks: number;
-  examDate: Date;
+  examDate: String;
   status: 'PASS' | 'FAIL';
 };
 
@@ -59,7 +59,7 @@ export default function MarksScreen() {
                   <Text style={[styles.statusText, { color: item.status === 'PASS' ? '#0adf54' : '#da1313', backgroundColor: item.status === 'PASS' ? '#c0fed5' : '#ffc2c2' }]} >
                     {item.status}
                   </Text>
-                  <Text style={styles.teacherName}>{item.teacherName} {"\n"} held on: {item.examDate?.toLocaleDateString()}</Text>
+                  <Text style={styles.teacherName}>{item.teacherName} {"\n"} held on: {item.examDate}</Text>
                 </View>
               </View>
 
