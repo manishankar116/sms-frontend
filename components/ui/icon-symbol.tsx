@@ -21,7 +21,8 @@ const MAPPING = {
   'checkmark.circle' : 'check-circle',
   'book.fill' : 'book',
   'doc.text.fill': 'description',
-  'chart.bar.fill': 'bar-chart'
+  'chart.bar.fill': 'bar-chart',
+  'speaker.fill': 'announcement',
 } as IconMapping;
 
 /**

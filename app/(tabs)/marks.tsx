@@ -55,7 +55,7 @@ export default function MarksScreen() {
                   </Text>
                 </View>
                 
-                <View>
+                <View style={{alignItems: 'flex-end', gap: 6}}>
                   <Text style={[styles.statusText, { color: item.status === 'PASS' ? '#0adf54' : '#da1313', backgroundColor: item.status === 'PASS' ? '#c0fed5' : '#ffc2c2' }]} >
                     {item.status}
                   </Text>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     paddingHorizontal: 8,
-    width: 40,
+    width: 50,
     paddingVertical: 4,
     borderRadius: 4,
     textAlign: 'center',
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#404040',
     fontWeight: '400',
+    marginBottom:5
 
   },
   subjectDetail: {
