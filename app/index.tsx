@@ -11,15 +11,14 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 
+import { getApiBaseUrls, getApiConnectionHelpText } from '@/hooks/apiConfig';
 import { DataContext } from '@/hooks/DataContext';
 import { getValidToken, saveToken } from '@/hooks/authStorage';
-
-const API_URLS = ['http://10.0.2.2:8080', 'http://localhost:8080'];
 
 const requestLogin = async (username: string, password: string) => {
   let lastError = null;
 
-  for (const baseUrl of API_URLS) {
+  for (const baseUrl of getApiBaseUrls()) {
     try {
       const response = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
@@ -77,7 +76,7 @@ const LoginScreen = () => {
       await fetchChildOverview();
       router.replace('/(tabs)/attendance');
     } catch {
-      setError('Unable to reach server. Please try again.');
+      setError(getApiConnectionHelpText());
     } finally {
       setLoading(false);
     }

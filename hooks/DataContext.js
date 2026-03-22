@@ -1,15 +1,14 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 
+import { getApiBaseUrls } from './apiConfig';
 import { clearToken, getValidToken } from './authStorage';
 
 export const DataContext = createContext();
 
-const API_URLS = ['http://10.0.2.2:8080', 'http://localhost:8080'];
-
 const fetchWithFallback = async (path, options) => {
   let lastError = null;
 
-  for (const baseUrl of API_URLS) {
+  for (const baseUrl of getApiBaseUrls()) {
     try {
       const response = await fetch(`${baseUrl}${path}`, options);
       return response;

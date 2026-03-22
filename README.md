@@ -16,6 +16,16 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+### Using a real phone on the same Wi-Fi
+
+If your backend is running on your laptop, `localhost` will not work from your phone. Set the API base URL to your laptop's Wi-Fi IP before starting Expo:
+
+```bash
+EXPO_PUBLIC_API_BASE_URL=http://192.168.1.10:8080 npx expo start
+```
+
+Replace `192.168.1.10` with your laptop's actual LAN IP address. The app also tries to infer the Expo host automatically, but setting `EXPO_PUBLIC_API_BASE_URL` is the most reliable option for login and API requests from a physical device.
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
