@@ -1,31 +1,28 @@
+import { DataContext } from '@/hooks/DataContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SubjectMark = {
+  subjectName: string;
   id: string;
   subject: string;
   grade: string;
   score: number;
   total: number;
+  teacherName: string;  
+  marks: number;
+  maxMarks: number;
+  examDate: Date;
+  status: 'PASS' | 'FAIL';
 };
 
-const SUBJECT_MARKS: SubjectMark[] = [
-  { id: '1', subject: 'Mathematics', grade: 'A', score: 92, total: 100 },
-  { id: '2', subject: 'Physics', grade: 'A', score: 89, total: 100 },
-  { id: '3', subject: 'Chemistry', grade: 'B+', score: 84, total: 100 },
-  { id: '4', subject: 'English', grade: 'A', score: 91, total: 100 },
-];
 
-const averageScore =
-  SUBJECT_MARKS.reduce((sum, subject) => sum + subject.score, 0) / SUBJECT_MARKS.length;
-
-const percentage = Math.round(averageScore);
-const averageGrade = 'A';
 
 export default function MarksScreen() {
+  const {data} = useContext(DataContext);
+  console.log('Marks Data:', data.marks);
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.summaryCard}>
           <Text style={styles.sectionTitle}>Overall Performance</Text>
@@ -34,12 +31,12 @@ export default function MarksScreen() {
           <View style={styles.summaryRow}>
             <View style={[styles.metricCard, styles.gradeCard]}>
               <Text style={styles.metricLabel}>Average Grade</Text>
-              <Text style={styles.metricValue}>{averageGrade}</Text>
+              <Text style={styles.metricValue}>{data?.grade}</Text>
             </View>
 
             <View style={[styles.metricCard, styles.percentageCard]}>
               <Text style={styles.metricLabel}>Percentage</Text>
-              <Text style={styles.metricValue}>{percentage} %</Text>
+              <Text style={styles.metricValue}>{data?.percentage} %</Text>
             </View>
           </View>
         </View>
@@ -47,26 +44,31 @@ export default function MarksScreen() {
         <Text style={styles.subjectHeading}>Subject Marks</Text>
 
         <View style={styles.subjectCard}>
-          {SUBJECT_MARKS.map((item, index) => (
+            {data?.marks?.map((item: SubjectMark, index: number) => (
             <View key={item.id}>
               <View style={styles.subjectRow}>
                 <View style={styles.subjectInfo}>
-                  <Text style={styles.subjectName}>{item.subject}</Text>
-                  <Text style={styles.subjectDetail}>Grade: {item.grade}</Text>
+                  <Text style={styles.subjectName}>{item.subjectName}</Text>
                   <Text style={styles.subjectDetail}>
-                    Score: {item.score} / {item.total}
+                  Grade: {item.grade} {"\n"}
+                  Score: {item.marks} / {item.maxMarks}
                   </Text>
                 </View>
-
-                <MaterialIcons name="chevron-right" size={28} color="#111111" />
+                
+                <View>
+                  <Text style={[styles.statusText, { color: item.status === 'PASS' ? '#0adf54' : '#da1313', backgroundColor: item.status === 'PASS' ? '#c0fed5' : '#ffc2c2' }]} >
+                    {item.status}
+                  </Text>
+                  <Text style={styles.teacherName}>{item.teacherName} {"\n"} held on: {item.examDate?.toLocaleDateString()}</Text>
+                </View>
               </View>
 
-              {index < SUBJECT_MARKS.length - 1 ? <View style={styles.subjectDivider} /> : null}
+              <View style={styles.subjectDivider} />
+
             </View>
-          ))}
+            ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
   );
 }
 
@@ -159,8 +161,25 @@ const styles = StyleSheet.create({
     color: '#171717',
     fontWeight: '500',
   },
+    statusText: {
+    fontSize: 12,
+    fontWeight: '500',
+    paddingHorizontal: 8,
+    width: 40,
+    paddingVertical: 4,
+    borderRadius: 4,
+    textAlign: 'center',
+    paddingBottom: 2,
+  },
+  teacherName:{
+    fontSize: 14,
+    color: '#404040',
+    fontWeight: '400',
+
+  },
   subjectDetail: {
     fontSize: 14,
+    lineHeight: 20,
     color: '#4B5563',
   },
   subjectDivider: {
