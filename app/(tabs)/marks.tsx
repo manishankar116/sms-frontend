@@ -1,127 +1,190 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { DataContext } from '@/hooks/DataContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useContext } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-type MarkRecord = {
+type SubjectMark = {
+  subjectName: string;
   id: string;
   subject: string;
-  obtained: number;
-  total: number;
   grade: string;
+  score: number;
+  total: number;
+  teacherName: string;  
+  marks: number;
+  maxMarks: number;
+  examDate: Date;
+  status: 'PASS' | 'FAIL';
 };
 
-const MARKS: MarkRecord[] = [
-  { id: '1', subject: 'Mathematics', obtained: 92, total: 100, grade: 'A+' },
-  { id: '2', subject: 'Physics', obtained: 88, total: 100, grade: 'A' },
-  { id: '3', subject: 'Chemistry', obtained: 84, total: 100, grade: 'A' },
-  { id: '4', subject: 'English', obtained: 90, total: 100, grade: 'A+' },
-];
+
 
 export default function MarksScreen() {
-  const totalObtained = MARKS.reduce((sum, item) => sum + item.obtained, 0);
-  const totalMarks = MARKS.reduce((sum, item) => sum + item.total, 0);
-  const percentage = Math.round((totalObtained / totalMarks) * 100);
-
+  const {data} = useContext(DataContext);
+  console.log('Marks Data:', data.marks);
   return (
-    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.heading}>Marks</Text>
-
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Overall Score</Text>
-          <Text style={styles.summaryValue}>{percentage}%</Text>
-          <Text style={styles.summaryMeta}>
-            {totalObtained}/{totalMarks} marks secured
-          </Text>
-        </View>
+          <Text style={styles.sectionTitle}>Overall Performance</Text>
+          <View style={styles.divider} />
 
-        {MARKS.map((item) => (
-          <View key={item.id} style={styles.markCard}>
-            <View>
-              <Text style={styles.subject}>{item.subject}</Text>
-              <Text style={styles.score}>
-                {item.obtained}/{item.total}
-              </Text>
+          <View style={styles.summaryRow}>
+            <View style={[styles.metricCard, styles.gradeCard]}>
+              <Text style={styles.metricLabel}>Average Grade</Text>
+              <Text style={styles.metricValue}>{data?.grade}</Text>
             </View>
-            <View style={styles.gradeBadge}>
-              <Text style={styles.gradeText}>{item.grade}</Text>
+
+            <View style={[styles.metricCard, styles.percentageCard]}>
+              <Text style={styles.metricLabel}>Percentage</Text>
+              <Text style={styles.metricValue}>{data?.percentage} %</Text>
             </View>
           </View>
-        ))}
+        </View>
+
+        <Text style={styles.subjectHeading}>Subject Marks</Text>
+
+        <View style={styles.subjectCard}>
+            {data?.marks?.map((item: SubjectMark, index: number) => (
+            <View key={item.id}>
+              <View style={styles.subjectRow}>
+                <View style={styles.subjectInfo}>
+                  <Text style={styles.subjectName}>{item.subjectName}</Text>
+                  <Text style={styles.subjectDetail}>
+                  Grade: {item.grade} {"\n"}
+                  Score: {item.marks} / {item.maxMarks}
+                  </Text>
+                </View>
+                
+                <View>
+                  <Text style={[styles.statusText, { color: item.status === 'PASS' ? '#0adf54' : '#da1313', backgroundColor: item.status === 'PASS' ? '#c0fed5' : '#ffc2c2' }]} >
+                    {item.status}
+                  </Text>
+                  <Text style={styles.teacherName}>{item.teacherName} {"\n"} held on: {item.examDate?.toLocaleDateString()}</Text>
+                </View>
+              </View>
+
+              <View style={styles.subjectDivider} />
+
+            </View>
+            ))}
+        </View>
       </ScrollView>
-    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f3f6fc',
+    backgroundColor: '#E9EEF8',
   },
   content: {
-    padding: 16,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 16,
+    padding: 14,
+    paddingBottom: 32,
   },
   summaryCard: {
-    backgroundColor: '#4f46e5',
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    paddingTop: 14,
+    paddingHorizontal: 14,
+    paddingBottom: 18,
+    shadowColor: '#000000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
+    elevation: 4,
   },
-  summaryLabel: {
-    color: '#c7d2fe',
+  sectionTitle: {
     fontSize: 14,
+    color: '#1F1F1F',
+    fontWeight: '500',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+    marginTop: 12,
+    marginBottom: 14,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  metricCard: {
+    flex: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+  },
+  gradeCard: {
+    backgroundColor: '#4DE073',
+  },
+  percentageCard: {
+    backgroundColor: '#7A74F6',
+  },
+  metricLabel: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
     marginBottom: 8,
   },
-  summaryValue: {
-    color: '#ffffff',
-    fontSize: 32,
+  metricValue: {
+    color: '#FFFFFF',
+    fontSize: 21,
     fontWeight: '800',
   },
-  summaryMeta: {
-    color: '#e0e7ff',
+  subjectHeading: {
     fontSize: 14,
-    marginTop: 8,
+    color: '#444444',
+    fontWeight: '500',
+    marginTop: 28,
+    marginBottom: 10,
   },
-  markCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 12,
+  subjectCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    minHeight: 520,
+  },
+  subjectRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: '#7f8aa3',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 18,
   },
-  subject: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
+  subjectInfo: {
+    gap: 5,
   },
-  score: {
+  subjectName: {
     fontSize: 15,
-    color: '#4b5563',
+    color: '#171717',
+    fontWeight: '500',
   },
-  gradeBadge: {
-    minWidth: 54,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    backgroundColor: '#e0e7ff',
-    alignItems: 'center',
+    statusText: {
+    fontSize: 12,
+    fontWeight: '500',
+    paddingHorizontal: 8,
+    width: 40,
+    paddingVertical: 4,
+    borderRadius: 4,
+    textAlign: 'center',
+    paddingBottom: 2,
   },
-  gradeText: {
-    color: '#4338ca',
-    fontSize: 15,
-    fontWeight: '700',
+  teacherName:{
+    fontSize: 14,
+    color: '#404040',
+    fontWeight: '400',
+
+  },
+  subjectDetail: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#4B5563',
+  },
+  subjectDivider: {
+    height: 1,
+    backgroundColor: '#D1D5DB',
+    marginHorizontal: 10,
   },
 });
