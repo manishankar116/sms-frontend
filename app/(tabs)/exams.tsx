@@ -1,3 +1,5 @@
+import { DataContext } from '@/hooks/DataContext';
+import { useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -66,8 +68,10 @@ const PAST_EXAMS: PastExam[] = [
 ];
 
 export default function ExamsScreen() {
+    const {data} = useContext(DataContext);
+    console.log(data?.exams);
+    
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.upcomingContainer}>
           <Text style={styles.sectionTitle}>Upcoming Exams</Text>
@@ -103,28 +107,31 @@ export default function ExamsScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#DCE1E7',
+    backgroundColor: '#d4d8dc',
   },
   scrollContent: {
-    padding: 20,
+    padding: 12,
     paddingBottom: 28,
   },
   upcomingContainer: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
     borderColor: '#D5D5D5',
     padding: 16,
     gap: 14,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   sectionTitle: {
-    fontSize: 36,
+    fontSize: 16,
     fontWeight: '500',
     color: '#111',
   },
@@ -139,57 +146,68 @@ const styles = StyleSheet.create({
     borderColor: '#DADADA',
     paddingVertical: 18,
     paddingHorizontal: 22,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   subjectText: {
-    fontSize: 34,
+    fontSize: 16,
     fontWeight: '500',
     color: '#111',
     marginBottom: 4,
   },
   detailText: {
-    fontSize: 30,
+    fontSize: 14,
     color: '#4A4A4A',
-    lineHeight: 40,
+    lineHeight: 20,
   },
   pastHeading: {
-    fontSize: 38,
+    fontSize: 18,
     fontWeight: '500',
     color: '#111',
     marginTop: 24,
     marginBottom: 14,
   },
   pastContainer: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
     borderColor: '#D5D5D5',
     paddingHorizontal: 18,
     paddingVertical: 14,
     gap: 14,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   pastRow: {
     position: 'relative',
-    paddingVertical: 8,
+    paddingVertical: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   pastDetailText: {
-    fontSize: 30,
-    color: '#111',
-    lineHeight: 42,
+    fontSize: 12,
+    color: '#242424',
+    lineHeight: 20,
   },
   resultContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
   resultText: {
-    fontSize: 32,
+    fontSize: 12,
     color: '#111',
     marginBottom: 8,
   },
   statusText: {
-    fontSize: 32,
+    fontSize: 12,
     color: '#12A946',
     fontWeight: '500',
+    backgroundColor: '#d4fee0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   pastDivider: {
     position: 'absolute',
