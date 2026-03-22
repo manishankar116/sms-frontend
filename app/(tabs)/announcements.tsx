@@ -1,6 +1,5 @@
 import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaFrameContext, SafeAreaProvider } from 'react-native-safe-area-context';
 
 type Announcement = {
   id: string;
@@ -62,7 +61,7 @@ function AnnouncementCard({ item }: { item: Announcement }) {
 
 export default function AnnouncementScreen() {
   return (
-    <SafeAreaProvider style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <FlatList
         data={ANNOUNCEMENTS}
         keyExtractor={(item) => item.id}
@@ -71,7 +70,7 @@ export default function AnnouncementScreen() {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={<Text style={styles.heading}>Announcements</Text>}
       />
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
 
