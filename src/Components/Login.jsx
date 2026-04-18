@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { checkUser, clearLogin, persistLogin } from '../helpers'
 
 function Login() {
   const [loginID, setLoginID] = useState('')
@@ -8,16 +9,19 @@ function Login() {
   const [username, setUsername] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    const storedRole = localStorage.getItem('role')
-    const storedUsername = localStorage.getItem('username')
+    const user = checkUser()
 
-    if (storedRole) {
-      setRole(storedRole)
-      setUsername(storedUsername ?? '')
+    if (user) {
+      setRole(user.role)
+      setUsername(user.username)
+      const fromPath = location.state?.from?.pathname || '/dashboard'
+      navigate(fromPath, { replace: true })
     }
-  }, [])
+  }, [location.state, navigate])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -25,13 +29,13 @@ function Login() {
     setIsSubmitting(true)
 
     try {
-      let username = loginID;
+      const usernameForRequest = loginID
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({  username , password }),
+        body: JSON.stringify({ username: usernameForRequest, password }),
       })
 
       if (!response.ok) {
@@ -46,14 +50,20 @@ function Login() {
         return
       }
 
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('username', data.username ?? loginID)
-      localStorage.setItem('role', data.role)
+      const loggedInUsername = data.username ?? loginID
+      persistLogin({
+        token: data.token,
+        role: data.role,
+        username: loggedInUsername,
+      })
 
       setRole(data.role)
-      setUsername(data.username ?? loginID)
+      setUsername(loggedInUsername)
       setLoginID('')
       setPassword('')
+
+      const fromPath = location.state?.from?.pathname || '/dashboard'
+      navigate(fromPath, { replace: true })
     } catch {
       setError('Unable to reach the server. Please check your network and try again.')
     } finally {
@@ -62,9 +72,7 @@ function Login() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
-    localStorage.removeItem('role')
+    clearLogin()
 
     setRole('')
     setUsername('')
