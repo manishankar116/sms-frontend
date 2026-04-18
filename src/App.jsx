@@ -5,6 +5,7 @@ import Attendance from './Components/Attendance';
 import Homework from './Components/Homework';
 import Exams from './Components/Exams';
 import Marks from './Components/Marks';
+import Announcements from './Components/Announcements';
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
         <Route path="/homework" element={<Homework />} />
         <Route path="/exams" element={<Exams />} />
         <Route path="/marks" element={<Marks />} />
-        <Route path="/announcement" element={<Announcement />} />
+        <Route path="/announcement" element={<Announcements />} />
       </Routes>
     </BrowserRouter>
 
