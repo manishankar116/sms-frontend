@@ -1,18 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-
+import { useEffect, useState } from 'react';
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import Login from './Components/Login';
+import Attendance from './Components/Attendance';
+import Homework from './Components/Homework';
+import Exams from './Components/Exams';
+import Marks from './Components/Marks';
+import Announcements from './Components/Announcements';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <section id="center">
-        Hello World
-      </section>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/homework" element={<Homework />} />
+        <Route path="/exams" element={<Exams />} />
+        <Route path="/marks" element={<Marks />} />
+        <Route path="/announcement" element={<Announcements />} />
+      </Routes>
+    </BrowserRouter>
+
   )
 }
 
