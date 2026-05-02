@@ -4,9 +4,11 @@ const Sidebar = () => {
   const role = (localStorage.getItem('role') || 'TEACHER').toUpperCase()
 
   const menuItems = [
-    { label: 'Dashboard', path: '/dashboard' },
     { label: 'Attendance', path: '/attendance' },
     { label: 'Homework', path: '/homework' },
+    { label: 'Exams', path: '/exams' },
+    { label: 'Marks', path: '/marks' },
+    { label: 'Announcements', path: '/announcements' },
   ]
 
   const attendanceRoleItem =
